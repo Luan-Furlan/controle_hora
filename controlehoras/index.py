@@ -19,6 +19,19 @@ def get_all_users():
     return jsonify(users)
 
 
+@app.route("/api/v1/users/<int:id>", methods=["GET"])
+def get_user_by_id(id):
+    user = None
+    for item in users:
+        if id == item["id"]:
+            user = item
+            pass
+    if user:
+        return jsonify(user)
+    else:
+        return 'usuário não encontrado', 404
+
+
 @app.route("/api/v1/users", methods=["POST"])
 def create_user():
     # recupera o objeto da requisição POST
