@@ -18,12 +18,13 @@ users = [
 def get_all_users():
     return jsonify(users)
 
+
 @app.route("/api/v1/users", methods=["POST"])
 def create_user():
     # recupera o objeto da requisição POST
     user = request.get_json()
     # imprime cada um dos valores
-    for v in user:
+    for v in user.items():
         print (v)
     # gera um id sequencial
     id = len(users) + 1
