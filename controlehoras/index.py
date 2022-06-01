@@ -1,33 +1,30 @@
 from flask import Flask, jsonify, request
 
+from controlehoras.model.user import User, UserSchema
+import controlehoras.service.userservice as userservice
+
 app = Flask(__name__)
+# app = Flask(__name__, instance_relative_config=True)
+# app.config.from_mapping(
+#     SECRET_KEY = "dev",
+#     DATABASE = os.path.join(app.instance_path, "bancodedados.sqlite"),
+# )
 
-# variável global
-users = [
-    {
-        "id" : 1,
-        "name" : "Alex de Moraes",
-        "email" : "alexdemoraes@gmail.com",
-        "login" : "alexdemoraes",
-        "password" : "123456",
-    }
-]
 
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
 
 @app.route("/api/v1/users", methods=["GET"])
 def get_all_users():
-    return jsonify(users)
+    users = userservice.get_all_users()
+    return jsonify(users_schema.dump(users))
 
 
 @app.route("/api/v1/users/<int:id>", methods=["GET"])
 def get_user_by_id(id):
-    user = None
-    for item in users:
-        if id == item["id"]:
-            user = item
-            pass
+    user = userservice.get_user_by_id(id)
     if user:
-        return jsonify(user)
+        return jsonify(user_schema.dump(user))
     else:
         return 'usuário não encontrado', 404
 
@@ -35,15 +32,7 @@ def get_user_by_id(id):
 @app.route("/api/v1/users", methods=["POST"])
 def create_user():
     # recupera o objeto da requisição POST
-    user = request.get_json()
-    # imprime cada um dos valores
-    for v in user.items():
-        print (v)
-    # gera um id sequencial
-    id = len(users) + 1
-    # atribui o id gerado
-    user["id"] = id
-    users.append(user)
-    return '', 204
-    return jsonify(users)
+    user = user_schema.load(request.get_json(), partial=True)
+    user = userservice.create_user(user)
+    return jsonify(user_schema.dump(user))
 
