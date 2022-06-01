@@ -44,6 +44,28 @@ def create_user():
     # atribui o id gerado
     user["id"] = id
     users.append(user)
-    return '', 204
-    return jsonify(users)
+    return jsonify(user), 201
+
+
+@app.route("/api/v1/users/<int:id>", methods=["PUT"])
+def update_user(id):
+    # recupera o objeto da requisição PUT
+    user_request = request.get_json()
+    user_request["id"] = id
+    i = 0
+    achou = False
+    while i < len(users):
+        user = users[i]
+        if (id == user["id"]):
+            # Seta achou = True e o índice do array user que 
+            # deverá ser atualizado é i
+            achou = True
+            break
+        i += 1
+
+    if (achou):
+        users[i] = user_request
+        return users[i]
+    else:
+        return 'usuário não encontrado', 404
 
