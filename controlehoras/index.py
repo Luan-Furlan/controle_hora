@@ -36,3 +36,13 @@ def create_user():
     user = userservice.create_user(user)
     return jsonify(user_schema.dump(user))
 
+
+@app.route("/api/v1/users/<int:id>", methods=["PUT"])
+def update_user(id):
+    # recupera o objeto da requisição PUT
+    user = user_schema.load(request.get_json())
+    try:
+        user = userservice.update_user(id, user)
+        return jsonify(user_schema.dump(user)), 200
+    except Exception:
+        return 'usuário não encontrado', 404
