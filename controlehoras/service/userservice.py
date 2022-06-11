@@ -1,13 +1,10 @@
 from controlehoras.model.user import User
-
-# variável global
-users = [
-    User(1, "Alex de Moraes","alexdemoraes@gmail.com","alexdemoraes","123456")
-]
+import controlehoras.dao.userdao as userdao
 
 
 def get_all_users():
-    return users
+    print("service - get all users")
+    return userdao.get_all_users()
 
 
 def get_user_by_id(id):
@@ -20,12 +17,11 @@ def get_user_by_id(id):
 
 
 def create_user(user):
-    # gera um id sequencial
-    id = len(users) + 1
-    # atribui o id gerado
-    user.id = id
-    users.append(user)
-    return user
+    print("service - create user")
+    print ("id ", user.id)
+    user_retornado = userdao.create_user(user)
+    print ("id ", user.id)
+    return user_retornado
 
 
 def update_user(id, user):
